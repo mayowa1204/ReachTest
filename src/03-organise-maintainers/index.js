@@ -40,32 +40,40 @@ The results should have this structure:
  */
 const axios = require('axios');
 module.exports = async function organiseMaintainers() {
-  const{data} = await axios.post(`http://ambush-api.inyourarea.co.uk/ambush/intercept`,
-  { "url": "https://api.npms.io/v2/search/suggestions?q=react",
-  "method": "GET",
-  "return_payload": true 
+  const {
+    data
+  } = await axios.post(`http://ambush-api.inyourarea.co.uk/ambush/intercept`, {
+    "url": "https://api.npms.io/v2/search/suggestions?q=react",
+    "method": "GET",
+    "return_payload": true
   })
- const maintainerList = []
-  data.content.forEach(content=>{
-  content.package.maintainers.forEach(maintainer=>{
-    const index = maintainerList.findIndex(x => x.username === maintainer.username);
-    console.log(index)
-    if(index < 0){
-      maintainerList.push({username:maintainer.username, packageNames:[content.package.name]})
-   }
-    else {
-      const  newPackage =  maintainerList[index].packageNames.map(p=>{
-        return p
-      })
-       newPackage.push(content.package.name)
-       maintainerList[index].packageNames =newPackage.sort()
+  const maintainerList = []
+  data.content.forEach(content => {
+    content.package.maintainers.forEach(maintainer => {
+      const index = maintainerList.findIndex(x => x.username === maintainer.username);
+      console.log(index)
+      if (index < 0) {
+        maintainerList.push({
+          username: maintainer.username,
+          packageNames: [content.package.name]
+        })
+      } else {
+        const newPackage = maintainerList[index].packageNames.map(p => {
+          return p
+        })
+        newPackage.push(content.package.name)
+        maintainerList[index].packageNames = newPackage.sort()
+      }
+
+    })
+  })
+  return maintainerList.sort(function (a, b) {
+    if (a.username < b.username) {
+      return -1;
     }
- 
-  })
-})
-return maintainerList.sort(function(a,b){
-  if(a.username < b.username) { return -1; }
-  if(a.username > b.username) { return 1; }
-  return 0;
-},)
+    if (a.username > b.username) {
+      return 1;
+    }
+    return 0;
+  }, )
 };
