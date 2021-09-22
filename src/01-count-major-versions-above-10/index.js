@@ -43,11 +43,8 @@ module.exports = async function countMajorVersionsAbove10() {
   data.content.forEach(content => {
     const currentVersion = content.package.version.split('.')
     const version2 = version.split('.')
-    if (~~currentVersion[0] > ~~version2[0]) {
+    if (parseInt(currentVersion[0], 10) > parseInt(version2[0], 10) || (parseInt(currentVersion[0], 10) == parseInt(version2[0], 10) && (parseInt(currentVersion[1], 10) > parseInt(version2[1], 10) || parseIntt(currentVersion[1], 10) == parseInt(version2[1], 10) && parseInt(currentVersion[2], 10) > parseInt(version2[2], 10)))) {
       versions.push(currentVersion.join())
-    }
-    if (~~currentVersion[0] == ~~version2[0] && (~~currentVersion[1] > ~~version2[1] || ~~currentVersion[1] == ~~version2[1] && ~~currentVersion[2] > ~~version2[2])) { // parse int
-      versions.push(currentVersion.join()) // joining the array 
     }
   })
   return versions.length
